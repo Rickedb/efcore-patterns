@@ -11,6 +11,12 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DbSetExtensionPatternContext>(opt => opt.UseInMemoryDatabase("InMemory"));
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    scope.ServiceProvider.GetService<DbSetExtensionPatternContext>().Database.EnsureCreated();
+}
+
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

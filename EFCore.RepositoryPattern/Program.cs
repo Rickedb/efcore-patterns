@@ -13,6 +13,11 @@ builder.Services.AddDbContext<RepositoryPatternContext>(opt => opt.UseInMemoryDa
 builder.Services.AddScoped<WeatherForecastRepository>();
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    scope.ServiceProvider.GetService<RepositoryPatternContext>().Database.EnsureCreated();
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

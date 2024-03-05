@@ -8,9 +8,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<FilterFunctionPatternContext>(opt => opt.UseInMemoryDatabase("InMemory"));
+builder.Services.AddDbContext<FilterFunctionPatternContext>(opt => opt.UseInMemoryDatabase("InMemory").EnableSensitiveDataLogging());
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    scope.ServiceProvider.GetService<FilterFunctionPatternContext>().Database.EnsureCreated();
+}
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
