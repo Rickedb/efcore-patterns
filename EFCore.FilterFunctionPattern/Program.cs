@@ -30,13 +30,13 @@ app.MapGet("/weatherforecast", async (FilterFunctionPatternContext context, Date
     {
         startAt = DateTime.Now;
     }
-
+    
     if (!endAt.HasValue)
     {
         endAt = DateTime.Now.AddDays(7);
     }
 
-
+    
     var filter = WeatherForecastQueryFilter.InRange(startAt.Value, endAt.Value)
                                             .And(WeatherForecastQueryFilter.ColdForecasts);
     var forecasts = await context.Forecasts.Query(filter).ToListAsync();

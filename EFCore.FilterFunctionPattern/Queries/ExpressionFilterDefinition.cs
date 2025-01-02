@@ -2,33 +2,33 @@
 
 namespace EFCore.FilterFunctionPattern.Queries
 {
-    public class QueryFilterDefinition<T> where T : class
+    public class ExpressionFilterDefinition<T> where T : class
     {
         private Expression<Func<T, bool>> _expression = x => true;
 
-        public QueryFilterDefinition()
+        public ExpressionFilterDefinition()
         {
 
         }
 
-        private QueryFilterDefinition(Expression<Func<T, bool>> expression)
+        private ExpressionFilterDefinition(Expression<Func<T, bool>> expression)
         {
             _expression = expression;
         }
 
-        public static QueryFilterDefinition<T> FromExpression(Expression<Func<T, bool>> expression)
+        public static ExpressionFilterDefinition<T> FromExpression(Expression<Func<T, bool>> expression)
         {
-            return new QueryFilterDefinition<T>(expression);
+            return new ExpressionFilterDefinition<T>(expression);
         }
 
-        public QueryFilterDefinition<T> And(Expression<Func<T, bool>> expression)
+        public ExpressionFilterDefinition<T> And(Expression<Func<T, bool>> expression)
         {
             var newExpression = Expression.AndAlso(_expression.Body, expression);
             _expression = Expression.Lambda<Func<T, bool>>(newExpression, expression.Parameters);
             return this;
         }
 
-        public QueryFilterDefinition<T> And(QueryFilterDefinition<T> definition)
+        public ExpressionFilterDefinition<T> And(ExpressionFilterDefinition<T> definition)
         {
             var leftParameter = _expression.Parameters[0];
             var rightParameter = definition._expression.Parameters[0];
@@ -42,7 +42,7 @@ namespace EFCore.FilterFunctionPattern.Queries
             return this;
         }
 
-        public QueryFilterDefinition<T> Or(Expression<Func<T, bool>> expression)
+        public ExpressionFilterDefinition<T> Or(Expression<Func<T, bool>> expression)
         {
             var invokedExpression = Expression.Invoke(expression, _expression.Parameters.Cast<Expression>());
             var newExpression = Expression.OrElse(_expression.Body, invokedExpression);
@@ -50,7 +50,7 @@ namespace EFCore.FilterFunctionPattern.Queries
             return this;
         }
 
-        public QueryFilterDefinition<T> Or(QueryFilterDefinition<T> definition)
+        public ExpressionFilterDefinition<T> Or(ExpressionFilterDefinition<T> definition)
         {
             var invokedExpression = Expression.Invoke(definition._expression, _expression.Parameters.Cast<Expression>());
             var newExpression = Expression.OrElse(_expression.Body, invokedExpression);
